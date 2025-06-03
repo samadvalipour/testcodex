@@ -1,6 +1,8 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
+from profile import services as profile_services
+
 
 class UserManager(BaseUserManager):
     """Custom user manager where phone number is the unique identifiers"""
@@ -11,6 +13,7 @@ class UserManager(BaseUserManager):
         user = self.model(phone=phone, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
+        profile_services.create_profile(user=user)
         return user
 
     def create_superuser(self, phone, password=None, **extra_fields):
