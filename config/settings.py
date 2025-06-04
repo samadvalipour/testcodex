@@ -130,7 +130,7 @@ REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
 # drf-spectacular configuration
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Testcodex API',
-    'DESCRIPTION': 'API documentation',
-    'VERSION': '1.0.0',
+    'TITLE': os.getenv('SPECTACULAR_TITLE', 'Testcodex API'),
+    'DESCRIPTION': os.getenv('SPECTACULAR_DESCRIPTION', 'API documentation'),
+    'VERSION': os.getenv('SPECTACULAR_VERSION', '1.0.0'),
 }
