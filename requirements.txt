@@ -6,3 +6,4 @@ djangorestframework-simplejwt
 django-activity-stream
 drf-spectacular
 drf-spectacular-sidecar
+sphinx
