@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 from actstream.models import Action
 
 from access_control.permissions import require_permission
@@ -17,6 +18,7 @@ class ActivityTargetListAPI(APIView):
             model = models.ActivityTarget
             fields = ['id', 'title']
 
+    @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request):
         require_permission(request.user, 'can_view_activity_target')
         targets = selectors.list_activity_targets()
@@ -25,6 +27,7 @@ class ActivityTargetListAPI(APIView):
 
 
 class FollowTargetForUserAPI(APIView):
+    @extend_schema(responses=None)
     def post(self, request, user_id, target_id):
         require_permission(request.user, 'can_assign_target_to_user')
         user = User.objects.get(pk=user_id)
@@ -34,6 +37,7 @@ class FollowTargetForUserAPI(APIView):
 
 
 class UnfollowTargetForUserAPI(APIView):
+    @extend_schema(responses=None)
     def post(self, request, user_id, target_id):
         require_permission(request.user, 'can_remove_target_from_user')
         user = User.objects.get(pk=user_id)
@@ -48,6 +52,7 @@ class UserFollowedTargetsAPI(APIView):
             model = models.ActivityTarget
             fields = ['id', 'title']
 
+    @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request, user_id):
         require_permission(request.user, 'can_view_activity_target')
         user = User.objects.get(pk=user_id)
@@ -59,6 +64,7 @@ class UserFollowedTargetsAPI(APIView):
 
 
 class UnseenActivitiesCountAPI(APIView):
+    @extend_schema(responses={'200': serializers.IntegerField()})
     def get(self, request):
         require_permission(request.user, 'can_view_activity')
         count = services.get_unseen_activities_count(user=request.user)
@@ -79,6 +85,7 @@ class UnseenActivitiesAPI(APIView):
                 'timestamp',
             ]
 
+    @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request, target_id):
         require_permission(request.user, 'can_view_activity')
         target = models.ActivityTarget.objects.get(pk=target_id)
@@ -101,6 +108,7 @@ class SeenActivitiesAPI(APIView):
                 'timestamp',
             ]
 
+    @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request, target_id):
         require_permission(request.user, 'can_view_activity')
         target = models.ActivityTarget.objects.get(pk=target_id)
@@ -123,6 +131,7 @@ class ObjectActivitiesAPI(APIView):
                 'timestamp',
             ]
 
+    @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request, content_type_id, object_id):
         require_permission(request.user, 'can_view_activity')
         content_type = ContentType.objects.get(pk=content_type_id)
@@ -147,6 +156,7 @@ class UserActivitiesAPI(APIView):
                 'timestamp',
             ]
 
+    @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request, user_id):
         require_permission(request.user, 'can_view_activity')
         user = User.objects.get(pk=user_id)

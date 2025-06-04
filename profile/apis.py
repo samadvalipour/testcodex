@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 from .models import Profile
 from . import services
@@ -19,11 +20,13 @@ class ProfileDetailAPI(APIView):
             model = Profile
             fields = ['id', 'user', 'first_name', 'last_name', 'bio', 'avatar']
 
+    @extend_schema(responses=OutputSerializer)
     def get(self, request, pk):
         profile = get_object_or_404(Profile, pk=pk)
         serializer = self.OutputSerializer(profile)
         return Response(serializer.data)
 
+    @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def put(self, request, pk):
         profile = get_object_or_404(Profile, pk=pk)
         serializer = self.InputSerializer(data=request.data)

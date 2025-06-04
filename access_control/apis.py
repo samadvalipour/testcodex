@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 from . import services, selectors
 from .permissions import require_permission
@@ -19,12 +20,14 @@ class PermissionListCreateAPI(APIView):
         codename = serializers.CharField(max_length=100)
         name = serializers.CharField(max_length=100)
 
+    @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request):
         require_permission(request.user, 'can_view_permission')
         permissions_qs = selectors.list_permissions()
         serializer = self.OutputSerializer(permissions_qs, many=True)
         return Response(serializer.data)
 
+    @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def post(self, request):
         require_permission(request.user, 'can_add_permission')
         serializer = self.InputSerializer(data=request.data)
@@ -47,12 +50,14 @@ class PermissionDetailAPI(APIView):
     def get_object(self, pk):
         return services.models.Permission.objects.get(pk=pk)
 
+    @extend_schema(responses=OutputSerializer)
     def get(self, request, pk):
         require_permission(request.user, 'can_view_permission')
         permission = self.get_object(pk)
         serializer = self.OutputSerializer(permission)
         return Response(serializer.data)
 
+    @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def put(self, request, pk):
         require_permission(request.user, 'can_change_permission')
         permission = self.get_object(pk)
@@ -65,6 +70,7 @@ class PermissionDetailAPI(APIView):
         output_serializer = self.OutputSerializer(permission)
         return Response(output_serializer.data)
 
+    @extend_schema(responses=None)
     def delete(self, request, pk):
         require_permission(request.user, 'can_delete_permission')
         permission = self.get_object(pk)
@@ -81,12 +87,14 @@ class RoleListCreateAPI(APIView):
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField(max_length=100)
 
+    @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request):
         require_permission(request.user, 'can_view_role')
         roles = selectors.list_roles()
         serializer = self.OutputSerializer(roles, many=True)
         return Response(serializer.data)
 
+    @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def post(self, request):
         require_permission(request.user, 'can_add_role')
         serializer = self.InputSerializer(data=request.data)
@@ -108,12 +116,14 @@ class RoleDetailAPI(APIView):
     def get_object(self, pk):
         return services.models.Role.objects.get(pk=pk)
 
+    @extend_schema(responses=OutputSerializer)
     def get(self, request, pk):
         require_permission(request.user, 'can_view_role')
         role = self.get_object(pk)
         serializer = self.OutputSerializer(role)
         return Response(serializer.data)
 
+    @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def put(self, request, pk):
         require_permission(request.user, 'can_change_role')
         role = self.get_object(pk)
@@ -123,6 +133,7 @@ class RoleDetailAPI(APIView):
         output_serializer = self.OutputSerializer(role)
         return Response(output_serializer.data)
 
+    @extend_schema(responses=None)
     def delete(self, request, pk):
         require_permission(request.user, 'can_delete_role')
         role = self.get_object(pk)
@@ -131,6 +142,7 @@ class RoleDetailAPI(APIView):
 
 
 class AssignPermissionToRoleAPI(APIView):
+    @extend_schema(responses=None)
     def post(self, request, role_id, permission_id):
         require_permission(request.user, 'can_assign_permission_to_role')
         role = services.models.Role.objects.get(pk=role_id)
@@ -140,6 +152,7 @@ class AssignPermissionToRoleAPI(APIView):
 
 
 class RemovePermissionFromRoleAPI(APIView):
+    @extend_schema(responses=None)
     def post(self, request, role_id, permission_id):
         require_permission(request.user, 'can_remove_permission_from_role')
         role = services.models.Role.objects.get(pk=role_id)
@@ -149,6 +162,7 @@ class RemovePermissionFromRoleAPI(APIView):
 
 
 class AssignRoleToUserAPI(APIView):
+    @extend_schema(responses=None)
     def post(self, request, user_id, role_id):
         require_permission(request.user, 'can_assign_role_to_user')
         user = User.objects.get(pk=user_id)
@@ -158,6 +172,7 @@ class AssignRoleToUserAPI(APIView):
 
 
 class RemoveRoleFromUserAPI(APIView):
+    @extend_schema(responses=None)
     def post(self, request, user_id, role_id):
         require_permission(request.user, 'can_remove_role_from_user')
         user = User.objects.get(pk=user_id)
