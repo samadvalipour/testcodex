@@ -25,10 +25,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'actstream',
     'accounts.apps.AccountsConfig',
     'profile.apps.ProfileConfig',
     'access_control.apps.AccessControlConfig',
     'otp.apps.OtpConfig',
+    'activity.apps.ActivityConfig',
 ]
 
 MIDDLEWARE = [
@@ -113,6 +115,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+}
+
+ACTSTREAM_SETTINGS = {
+    'MANAGER': 'actstream.managers.ActionManager',
 }
 
 # OTP and Redis configuration
