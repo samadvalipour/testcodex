@@ -2,6 +2,8 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
 from profile import services as profile_services
+from activity import services as activity_services
+from activity.models import ActivityTarget
 
 
 class UserManager(BaseUserManager):
@@ -14,6 +16,15 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         profile_services.create_profile(user=user)
+        target, _ = ActivityTarget.objects.get_or_create(
+            title=ActivityTarget.Titles.USER
+        )
+        activity_services.create_activity(
+            actor=user,
+            verb='ثبت نام کرد',
+            target=target,
+            action_object=target,
+        )
         return user
 
     def create_superuser(self, phone, password=None, **extra_fields):

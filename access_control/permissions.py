@@ -17,6 +17,10 @@ from . import models
 # - can_remove_permission_from_role
 # - can_assign_role_to_user
 # - can_remove_role_from_user
+# - can_assign_target_to_user
+# - can_remove_target_from_user
+# - can_view_activity
+# - can_view_activity_target
 
 
 def user_has_permission(*, user, codename):
