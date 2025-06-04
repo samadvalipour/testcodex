@@ -1,3 +1,5 @@
+"""Utility functions for OTP authentication."""
+
 import random
 from django.contrib.auth import get_user_model
 
@@ -10,10 +12,12 @@ User = get_user_model()
 
 
 def _generate_code() -> str:
+    """Return a random 6 digit numeric string."""
     return f"{random.randint(100000, 999999)}"
 
 
 def send_otp_code(*, phone: str, provider: BaseOtpProvider | None = None) -> None:
+    """Generate and send an OTP code to the given phone number."""
     code = _generate_code()
     hashed = make_password(code)
     set_otp(phone, hashed)
@@ -22,6 +26,7 @@ def send_otp_code(*, phone: str, provider: BaseOtpProvider | None = None) -> Non
 
 
 def verify_otp_code(*, phone: str, code: str) -> bool:
+    """Validate an OTP code for the given phone number."""
     stored = get_otp(phone)
     if stored and check_password(code, stored):
         delete_otp(phone)
@@ -30,6 +35,7 @@ def verify_otp_code(*, phone: str, code: str) -> bool:
 
 
 def login_or_register(*, phone: str) -> User:
+    """Return an existing user for ``phone`` or create a new one."""
     user, created = User.objects.get_or_create(phone=phone)
     return user
 
