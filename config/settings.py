@@ -24,9 +24,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'accounts.apps.AccountsConfig',
     'profile.apps.ProfileConfig',
     'access_control.apps.AccessControlConfig',
+    'otp.apps.OtpConfig',
 ]
 
 MIDDLEWARE = [
@@ -105,3 +107,14 @@ STATIC_URL = os.getenv("STATIC_URL", "static/")
 AUTH_USER_MODEL = 'accounts.User'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Django REST framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+# OTP and Redis configuration
+OTP_EXPIRATION_SECONDS = int(os.getenv("OTP_EXPIRATION_SECONDS", "120"))
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
