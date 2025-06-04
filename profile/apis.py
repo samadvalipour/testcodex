@@ -2,19 +2,23 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_serializer
 
 from .models import Profile
 from . import services
 
 
 class ProfileDetailAPI(APIView):
+    """Retrieve or update user profile details."""
+
+    @extend_schema_serializer(component_name="ProfileDetailInput")
     class InputSerializer(serializers.Serializer):
         first_name = serializers.CharField(max_length=50, required=False, allow_blank=True)
         last_name = serializers.CharField(max_length=50, required=False, allow_blank=True)
         bio = serializers.CharField(required=False, allow_blank=True)
         avatar = serializers.URLField(required=False, allow_blank=True)
 
+    @extend_schema_serializer(component_name="ProfileDetailOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = Profile
