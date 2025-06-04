@@ -37,4 +37,12 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('Superuser must have is_superuser=True.'))
 
-        return self.create_user(phone, password, **extra_fields)
+        user = self.create_user(phone, password, **extra_fields)
+
+        # Assign the admin role to newly created superusers
+        from access_control import models as ac_models
+
+        admin_role, _ = ac_models.Role.objects.get_or_create(name='admin')
+        ac_models.UserRole.objects.get_or_create(user=user, role=admin_role)
+
+        return user
