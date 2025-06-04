@@ -8,11 +8,11 @@ from actstream.models import (
 )
 from actstream import action
 
-from .models import ActivityTarget, ActivitySeenStatus
+from .models import ActivityTargets, ActivitySeenStatus
 
 
 def list_activity_targets():
-    return ActivityTarget.objects.all()
+    return ActivityTargets.objects.all()
 
 
 def list_user_activities(*, user, target=None):

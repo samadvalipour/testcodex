@@ -1,5 +1,5 @@
 from accounts.models import User
-from activity.models import ActivityTarget
+from activity.models import ActivityTargets
 from actstream import action
 
 
@@ -10,8 +10,8 @@ def create_user(**kwargs):
 
 
 def create_target(**kwargs):
-    title = kwargs.get('title', ActivityTarget.Titles.USER)
-    return ActivityTarget.objects.create(title=title)
+    title = kwargs.get('title', ActivityTargets.Titles.USER)
+    return ActivityTargets.objects.create(title=title)
 
 
 def create_action(*, actor, verb='did something', target=None, action_object=None):

@@ -3,7 +3,7 @@ from django.db import models
 from actstream.models import Action
 
 
-class ActivityTarget(models.Model):
+class ActivityTargets(models.Model):
     class Titles(models.TextChoices):
         USER = 'user', 'کاربر'
         GOAL = 'goal', 'هدف'

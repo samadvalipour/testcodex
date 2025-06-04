@@ -12,10 +12,10 @@ from . import services, selectors, models
 User = get_user_model()
 
 
-class ActivityTargetListAPI(APIView):
+class ActivityTargetsListAPI(APIView):
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
-            model = models.ActivityTarget
+            model = models.ActivityTargets
             fields = ['id', 'title']
 
     @extend_schema(responses=OutputSerializer(many=True))
@@ -31,7 +31,7 @@ class FollowTargetForUserAPI(APIView):
     def post(self, request, user_id, target_id):
         require_permission(request.user, 'can_assign_target_to_user')
         user = User.objects.get(pk=user_id)
-        target = models.ActivityTarget.objects.get(pk=target_id)
+        target = models.ActivityTargets.objects.get(pk=target_id)
         services.follow_target(user=user, target=target)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -41,7 +41,7 @@ class UnfollowTargetForUserAPI(APIView):
     def post(self, request, user_id, target_id):
         require_permission(request.user, 'can_remove_target_from_user')
         user = User.objects.get(pk=user_id)
-        target = models.ActivityTarget.objects.get(pk=target_id)
+        target = models.ActivityTargets.objects.get(pk=target_id)
         services.unfollow_target(user=user, target=target)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -49,7 +49,7 @@ class UnfollowTargetForUserAPI(APIView):
 class UserFollowedTargetsAPI(APIView):
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
-            model = models.ActivityTarget
+            model = models.ActivityTargets
             fields = ['id', 'title']
 
     @extend_schema(responses=OutputSerializer(many=True))
@@ -88,7 +88,7 @@ class UnseenActivitiesAPI(APIView):
     @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request, target_id):
         require_permission(request.user, 'can_view_activity')
-        target = models.ActivityTarget.objects.get(pk=target_id)
+        target = models.ActivityTargets.objects.get(pk=target_id)
         actions = selectors.list_unseen_activities(user=request.user, target=target)
         serializer = self.OutputSerializer(actions, many=True)
         return Response(serializer.data)
@@ -111,7 +111,7 @@ class SeenActivitiesAPI(APIView):
     @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request, target_id):
         require_permission(request.user, 'can_view_activity')
-        target = models.ActivityTarget.objects.get(pk=target_id)
+        target = models.ActivityTargets.objects.get(pk=target_id)
         actions = selectors.list_seen_activities(user=request.user, target=target)
         serializer = self.OutputSerializer(actions, many=True)
         return Response(serializer.data)
