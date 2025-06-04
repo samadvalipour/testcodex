@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_serializer
 from actstream.models import Action
 
 from access_control.permissions import require_permission
@@ -13,6 +13,9 @@ User = get_user_model()
 
 
 class ActivityTargetsListAPI(APIView):
+    """List all available activity targets."""
+
+    @extend_schema_serializer(component_name="ActivityTargetsListOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = models.ActivityTargets
@@ -27,6 +30,7 @@ class ActivityTargetsListAPI(APIView):
 
 
 class FollowTargetForUserAPI(APIView):
+    """Follow an activity target for a user."""
     @extend_schema(responses=None)
     def post(self, request, user_id, target_id):
         require_permission(request.user, 'can_assign_target_to_user')
@@ -37,6 +41,7 @@ class FollowTargetForUserAPI(APIView):
 
 
 class UnfollowTargetForUserAPI(APIView):
+    """Unfollow an activity target for a user."""
     @extend_schema(responses=None)
     def post(self, request, user_id, target_id):
         require_permission(request.user, 'can_remove_target_from_user')
@@ -47,6 +52,9 @@ class UnfollowTargetForUserAPI(APIView):
 
 
 class UserFollowedTargetsAPI(APIView):
+    """List activity targets followed by a user."""
+
+    @extend_schema_serializer(component_name="UserFollowedTargetsOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = models.ActivityTargets
@@ -64,6 +72,7 @@ class UserFollowedTargetsAPI(APIView):
 
 
 class UnseenActivitiesCountAPI(APIView):
+    """Return the number of unseen activities for the authenticated user."""
     @extend_schema(responses={'200': serializers.IntegerField()})
     def get(self, request):
         require_permission(request.user, 'can_view_activity')
@@ -72,6 +81,9 @@ class UnseenActivitiesCountAPI(APIView):
 
 
 class UnseenActivitiesAPI(APIView):
+    """List unseen activities for a specific target."""
+
+    @extend_schema_serializer(component_name="UnseenActivitiesOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = Action
@@ -95,6 +107,9 @@ class UnseenActivitiesAPI(APIView):
 
 
 class SeenActivitiesAPI(APIView):
+    """List seen activities for a specific target."""
+
+    @extend_schema_serializer(component_name="SeenActivitiesOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = Action
@@ -118,6 +133,9 @@ class SeenActivitiesAPI(APIView):
 
 
 class ObjectActivitiesAPI(APIView):
+    """List activities related to a specific object."""
+
+    @extend_schema_serializer(component_name="ObjectActivitiesOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = Action
@@ -143,6 +161,9 @@ class ObjectActivitiesAPI(APIView):
 
 
 class UserActivitiesAPI(APIView):
+    """List activities performed by a specific user."""
+
+    @extend_schema_serializer(component_name="UserActivitiesOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = Action

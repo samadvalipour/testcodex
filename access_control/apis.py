@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_serializer
 
 from . import services, selectors
 from .permissions import require_permission
@@ -11,11 +11,15 @@ User = get_user_model()
 
 
 class PermissionListCreateAPI(APIView):
+    """List existing permissions or create a new permission."""
+
+    @extend_schema_serializer(component_name="PermissionListCreateOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = services.models.Permission
             fields = ['id', 'codename', 'name']
 
+    @extend_schema_serializer(component_name="PermissionListCreateInput")
     class InputSerializer(serializers.Serializer):
         codename = serializers.CharField(max_length=100)
         name = serializers.CharField(max_length=100)
@@ -38,11 +42,15 @@ class PermissionListCreateAPI(APIView):
 
 
 class PermissionDetailAPI(APIView):
+    """Retrieve, update or delete a specific permission."""
+
+    @extend_schema_serializer(component_name="PermissionDetailOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = services.models.Permission
             fields = ['id', 'codename', 'name']
 
+    @extend_schema_serializer(component_name="PermissionDetailInput")
     class InputSerializer(serializers.Serializer):
         codename = serializers.CharField(max_length=100, required=False)
         name = serializers.CharField(max_length=100, required=False)
@@ -79,11 +87,15 @@ class PermissionDetailAPI(APIView):
 
 
 class RoleListCreateAPI(APIView):
+    """List existing roles or create a new role."""
+
+    @extend_schema_serializer(component_name="RoleListCreateOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = services.models.Role
             fields = ['id', 'name']
 
+    @extend_schema_serializer(component_name="RoleListCreateInput")
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField(max_length=100)
 
@@ -105,11 +117,15 @@ class RoleListCreateAPI(APIView):
 
 
 class RoleDetailAPI(APIView):
+    """Retrieve, update or delete a specific role."""
+
+    @extend_schema_serializer(component_name="RoleDetailOutput")
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
             model = services.models.Role
             fields = ['id', 'name']
 
+    @extend_schema_serializer(component_name="RoleDetailInput")
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField(max_length=100, required=False)
 
@@ -142,6 +158,7 @@ class RoleDetailAPI(APIView):
 
 
 class AssignPermissionToRoleAPI(APIView):
+    """Assign a permission to a role."""
     @extend_schema(responses=None)
     def post(self, request, role_id, permission_id):
         require_permission(request.user, 'can_assign_permission_to_role')
@@ -152,6 +169,7 @@ class AssignPermissionToRoleAPI(APIView):
 
 
 class RemovePermissionFromRoleAPI(APIView):
+    """Remove a permission from a role."""
     @extend_schema(responses=None)
     def post(self, request, role_id, permission_id):
         require_permission(request.user, 'can_remove_permission_from_role')
@@ -162,6 +180,7 @@ class RemovePermissionFromRoleAPI(APIView):
 
 
 class AssignRoleToUserAPI(APIView):
+    """Assign a role to a user."""
     @extend_schema(responses=None)
     def post(self, request, user_id, role_id):
         require_permission(request.user, 'can_assign_role_to_user')
@@ -172,6 +191,7 @@ class AssignRoleToUserAPI(APIView):
 
 
 class RemoveRoleFromUserAPI(APIView):
+    """Remove a role from a user."""
     @extend_schema(responses=None)
     def post(self, request, user_id, role_id):
         require_permission(request.user, 'can_remove_role_from_user')
