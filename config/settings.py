@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'otp.apps.OtpConfig',
     'activity.apps.ActivityConfig',
 ]
-
+SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
