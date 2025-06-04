@@ -24,6 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
     'rest_framework_simplejwt',
     'actstream',
     'accounts.apps.AccountsConfig',
@@ -115,6 +117,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 ACTSTREAM_SETTINGS = {
@@ -124,3 +127,10 @@ ACTSTREAM_SETTINGS = {
 # OTP and Redis configuration
 OTP_EXPIRATION_SECONDS = int(os.getenv("OTP_EXPIRATION_SECONDS", "120"))
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
+# drf-spectacular configuration
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Testcodex API',
+    'DESCRIPTION': 'API documentation',
+    'VERSION': '1.0.0',
+}

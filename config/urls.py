@@ -2,6 +2,7 @@
 
 from django.contrib import admin
 from django.urls import path
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from profile.apis import ProfileDetailAPI
 from access_control import apis as ac_views
@@ -11,6 +12,8 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
     path('profiles/<int:pk>/', ProfileDetailAPI.as_view()),
     path('access-control/permissions/', ac_views.PermissionListCreateAPI.as_view()),
     path('access-control/permissions/<int:pk>/', ac_views.PermissionDetailAPI.as_view()),
