@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts.apps.AccountsConfig',
     'profile.apps.ProfileConfig',
+    'access_control.apps.AccessControlConfig',
 ]
 
 MIDDLEWARE = [
