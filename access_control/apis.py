@@ -11,7 +11,6 @@ User = get_user_model()
 
 
 class PermissionListCreateAPI(APIView):
-    """List existing permissions or create a new permission."""
 
     @extend_schema_serializer(component_name="PermissionListCreateOutput")
     class OutputSerializer(serializers.ModelSerializer):
@@ -26,6 +25,7 @@ class PermissionListCreateAPI(APIView):
 
     @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request):
+        """List existing permissions."""
         require_permission(request.user, 'can_view_permission')
         permissions_qs = selectors.list_permissions()
         serializer = self.OutputSerializer(permissions_qs, many=True)
@@ -33,6 +33,7 @@ class PermissionListCreateAPI(APIView):
 
     @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def post(self, request):
+        """create a new permission."""
         require_permission(request.user, 'can_add_permission')
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -42,7 +43,6 @@ class PermissionListCreateAPI(APIView):
 
 
 class PermissionDetailAPI(APIView):
-    """Retrieve, update or delete a specific permission."""
 
     @extend_schema_serializer(component_name="PermissionDetailOutput")
     class OutputSerializer(serializers.ModelSerializer):
@@ -60,6 +60,7 @@ class PermissionDetailAPI(APIView):
 
     @extend_schema(responses=OutputSerializer)
     def get(self, request, pk):
+        """Retrieve a specific permission."""
         require_permission(request.user, 'can_view_permission')
         permission = self.get_object(pk)
         serializer = self.OutputSerializer(permission)
@@ -67,6 +68,7 @@ class PermissionDetailAPI(APIView):
 
     @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def put(self, request, pk):
+        """update a specific permission."""
         require_permission(request.user, 'can_change_permission')
         permission = self.get_object(pk)
         serializer = self.InputSerializer(data=request.data)
@@ -80,6 +82,7 @@ class PermissionDetailAPI(APIView):
 
     @extend_schema(responses=None)
     def delete(self, request, pk):
+        """delete a specific permission."""
         require_permission(request.user, 'can_delete_permission')
         permission = self.get_object(pk)
         services.delete_permission(permission=permission)
@@ -87,7 +90,6 @@ class PermissionDetailAPI(APIView):
 
 
 class RoleListCreateAPI(APIView):
-    """List existing roles or create a new role."""
 
     @extend_schema_serializer(component_name="RoleListCreateOutput")
     class OutputSerializer(serializers.ModelSerializer):
@@ -101,6 +103,7 @@ class RoleListCreateAPI(APIView):
 
     @extend_schema(responses=OutputSerializer(many=True))
     def get(self, request):
+        """List existing roles."""
         require_permission(request.user, 'can_view_role')
         roles = selectors.list_roles()
         serializer = self.OutputSerializer(roles, many=True)
@@ -108,6 +111,7 @@ class RoleListCreateAPI(APIView):
 
     @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def post(self, request):
+        """create a new role"""
         require_permission(request.user, 'can_add_role')
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -117,7 +121,6 @@ class RoleListCreateAPI(APIView):
 
 
 class RoleDetailAPI(APIView):
-    """Retrieve, update or delete a specific role."""
 
     @extend_schema_serializer(component_name="RoleDetailOutput")
     class OutputSerializer(serializers.ModelSerializer):
@@ -134,6 +137,7 @@ class RoleDetailAPI(APIView):
 
     @extend_schema(responses=OutputSerializer)
     def get(self, request, pk):
+        """Retrieve a specific role."""
         require_permission(request.user, 'can_view_role')
         role = self.get_object(pk)
         serializer = self.OutputSerializer(role)
@@ -141,6 +145,7 @@ class RoleDetailAPI(APIView):
 
     @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def put(self, request, pk):
+        """update a specific role."""
         require_permission(request.user, 'can_change_role')
         role = self.get_object(pk)
         serializer = self.InputSerializer(data=request.data)
@@ -151,6 +156,7 @@ class RoleDetailAPI(APIView):
 
     @extend_schema(responses=None)
     def delete(self, request, pk):
+        """delete a specific role."""
         require_permission(request.user, 'can_delete_role')
         role = self.get_object(pk)
         services.delete_role(role=role)

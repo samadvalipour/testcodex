@@ -9,7 +9,6 @@ from . import services
 
 
 class ProfileDetailAPI(APIView):
-    """Retrieve or update user profile details."""
 
     @extend_schema_serializer(component_name="ProfileDetailInput")
     class InputSerializer(serializers.Serializer):
@@ -26,12 +25,14 @@ class ProfileDetailAPI(APIView):
 
     @extend_schema(responses=OutputSerializer)
     def get(self, request, pk):
+        """Retrieve user profile details."""
         profile = get_object_or_404(Profile, pk=pk)
         serializer = self.OutputSerializer(profile)
         return Response(serializer.data)
 
     @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def put(self, request, pk):
+        """update user profile details."""
         profile = get_object_or_404(Profile, pk=pk)
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
