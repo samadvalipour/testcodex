@@ -105,8 +105,6 @@ env/
 # virtualenv
 venv/
 
-# Django migrations
-**/migrations/
 
 # SQLite database files
 *.sqlite3
