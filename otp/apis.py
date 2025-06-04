@@ -1,6 +1,7 @@
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 from . import services
 
@@ -14,6 +15,7 @@ class OtpAuthAPI(APIView):
         access = serializers.CharField()
         refresh = serializers.CharField()
 
+    @extend_schema(request=InputSerializer, responses=OutputSerializer)
     def post(self, request):
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
