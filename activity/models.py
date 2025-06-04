@@ -5,12 +5,12 @@ from actstream.models import Action
 
 class ActivityTarget(models.Model):
     class Titles(models.TextChoices):
-        USER = 'user', 'User'
-        GOAL = 'goal', 'Goal'
-        BADGE = 'badge', 'Badge'
-        POINT = 'point', 'Point'
-        ACHIEVEMENT = 'achievement', 'Achievement'
-        MISSION = 'mission', 'Mission'
+        USER = 'user', 'کاربر'
+        GOAL = 'goal', 'هدف'
+        BADGE = 'badge', 'نشان'
+        POINT = 'point', 'امتیاز'
+        ACHIEVEMENT = 'achievement', 'دستاورد'
+        MISSION = 'mission', 'ماموریت'
 
     title = models.CharField(max_length=20, choices=Titles.choices)
 
